@@ -12,10 +12,13 @@ pipeline {
                   mvn clean package -DskipTests'''
             }
         }
-         stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                withSonarQubeEnv('sonarqube') {
-                 sh 'mvn sonar:sonar'
+                 sh '''
+                cd backend
+                mvn sonar:sonar
+            '''
         }
     }
 }
