@@ -12,11 +12,13 @@ pipeline {
                   mvn clean package -DskipTests'''
             }
         }
-        stage('Test') {
+         stage('SonarQube Analysis') {
             steps {
-                echo 'test success'
-            }
+               withSonarQubeEnv('sonarqube') {
+                 sh 'mvn sonar:sonar'
         }
+    }
+}
         stage('Deploy') {
             steps {
                 echo 'deploy success'
