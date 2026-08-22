@@ -1,0 +1,36 @@
+pipeline {
+    agent {label 'project-node'}
+
+    stages {
+        stage('Git-Pull') {
+            steps {
+                git branch: 'devops', url: 'https://github.com/ramsahu360/EasyCRUD.git'
+            }
+        }
+        stage('backend') {
+              steps {
+                  sh '''cd backend 
+                  docker build -t ramsahu360/easy-backend:latest .'''
+            }
+        }
+        stage('frontend') {
+               steps {
+                    sh '''cd frontend 
+                    docker build -t ramsahu360/easy-frontend:latest .'''
+
+            }
+        }
+        stage('Docker-push') {
+               steps {
+                   sh '''docker push ramsahu360/easy-backend:latest
+                    docker push ramsahu360/easy-frontend:latest'''
+            }
+        }
+         stage('Apply') {
+               steps {
+                   sh 'kubectl apply -f simple-deploy/.'
+            }
+        }
+
+    }
+}
