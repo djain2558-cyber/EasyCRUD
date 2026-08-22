@@ -26,6 +26,13 @@ pipeline {
                     docker push ramsahu360/easy-frontend:latest'''
             }
         }
+        stage('Docker-clean') {
+               steps {
+                   sh '''docker rmi -f ramsahu360/easy-backend:latest
+                    docker rmi -f ramsahu360/easy-frontend:latest'''
+            }
+        }
+
          stage('Apply') {
                steps {
                    sh 'kubectl apply -f simple-deploy/.'
