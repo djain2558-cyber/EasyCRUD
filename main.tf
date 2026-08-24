@@ -4,7 +4,7 @@ region = "ap-southeast-1"
 
 terraform {
    backend "s3" {
-      bucket = "my-bucket-11"
+      bucket = "my-bucket-batch-40"
       key    = "state/terraform.tfstate"
       region = "ap-southeast-1"
   }
