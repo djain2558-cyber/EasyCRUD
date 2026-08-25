@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git-PULL') {
+            steps {
+                git branch: 'devops', url: 'git 'https://github.com/djain2558-cyber/EasyCRUD.git''
+            }
+        }
+         stage('Docker-backend') {
+            steps {
+               sh '''cd backend
+               docker build -t ramsahu360/docker-backend:latest .''' 
+            }
+        }
+        stage('Docker-Frontend') {
+            steps {
+               sh '''cd frontend
+               docker build -t ramsahu360/docker-frontend:latest .''' 
+            }
+        }
+        stage('Docker-PUSH') {
+            steps {
+               sh '''docker push ramsahu360/docker-backend:latest
+                    docker push ramsahu360/docker-frontend:latest'''
+            }
+        }
+        stage('Docker-RMI') {
+            steps {
+               sh '''docker rmi -f ramsahu360/docker-backend:latest
+                    docker rmi -f ramsahu360/docker-frontend:latest'''
+            }
+        }
+        stage('APPLY') {
+            steps {
+             sh 'kubectl apply -f simple-deploy/.'
+            }
+        }
+         
+    }
+}
