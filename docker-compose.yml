@@ -1,0 +1,50 @@
+services:
+
+  database:
+    image: mariadb:11
+    container_name: easycrud-database
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: studentdb
+      MARIADB_USER: studentuser
+      MARIADB_PASSWORD: studentpassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - easycrud-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: easycrud-backend
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/studentdb
+      SPRING_DATASOURCE_USERNAME: studentuser
+      SPRING_DATASOURCE_PASSWORD: studentpassword
+    ports:
+      - "8080:8080"
+    networks:
+      - easycrud-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: easycrud-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - easycrud-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  easycrud-network:
+    driver: bridge
